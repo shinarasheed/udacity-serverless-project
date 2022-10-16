@@ -1,0 +1,15 @@
+**/.DS_Store
+node_modules
+# package directories
+backend/node_modules
+client/node_modules
+jspm_packages
+
+# Serverless directories
+backend/.serverless
+
+# Webpack directories
+backend/.webpack
+
+# Local DynamoDb
+backend/.dynamodb
