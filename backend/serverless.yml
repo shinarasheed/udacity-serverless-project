@@ -1,5 +1,6 @@
-service:
-  name: udacity-aws-severless-app
+service: udacity-aws-severless-app
+
+frameworkVersion: 3.23.0
 
 plugins:
   - serverless-webpack
