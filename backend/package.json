@@ -1,16 +1,15 @@
 {
-  "name": "udacity-serverless-project",
+  "name": "serverless-todo-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "Serverless TODO image app",
   "dependencies": {
-    "express": "^4.18.2",
-    "serverless-http": "^3.0.3",
     "@types/axios": "^0.14.0",
     "@types/http-errors": "^1.8.2",
     "aws-xray-sdk": "^3.3.8",
     "axios": "^1.1.3",
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.5",
     "middy": "^0.36.0",
     "source-map-support": "^0.5.21",
     "uuid": "^9.0.0",
@@ -22,14 +21,14 @@
     "@types/node": "^18.11.2",
     "aws-sdk": "^2.1236.0",
     "serverless-aws-documentation": "^1.1.0",
-    "serverless-deployment-bucket": "^1.6.0",
     "serverless-iam-roles-per-function": "^3.2.0",
     "serverless-plugin-canary-deployments": "^0.8.0",
-    "serverless-plugin-tracing": "^2.0.0",
     "serverless-reqvalidator-plugin": "^2.0.0",
     "serverless-webpack": "^5.10.0",
     "ts-loader": "^9.4.1",
-    "typescript": ">=4.8.4",
+    "typescript": "^4.8.4",
     "webpack": "^5.74.0"
-  }
+  },
+  "author": "Deepa Subramanian",
+  "license": "MIT"
 }

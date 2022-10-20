@@ -20,11 +20,11 @@ provider:
     apiGateway: true
 
   # Use these variables in the functions and resouorces section below. For example,
-  # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
+  # ${self:provider.environment.S3_BUCKET_NAME}
   environment:
     PROJECT_NAME: aws-serverless-app
     TODOS_TABLE: aws-serverless-app-${self:provider.stage}
-    ATTACHMENT_S3_BUCKET: aws-serverless-app-${self:provider.stage}
+    S3_BUCKET_NAME: aws-serverless-app-${self:provider.stage}
 
 custom:
   documentation:
@@ -88,8 +88,7 @@ functions:
           method: get
           path: todos
           cors: true
-          authorizer:
-            name: Auth
+          authorizer: Auth
     iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-get-todo-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow
@@ -110,8 +109,7 @@ functions:
           method: post
           path: todos
           cors: true
-          authorizer:
-            name: Auth
+          authorizer: Auth
           documentation:
             summary: "Create a new todo item"
             description: "Create a new todo item"
@@ -139,8 +137,7 @@ functions:
           method: patch
           path: todos/{todoId}
           cors: true
-          authorizer:
-            name: Auth
+          authorizer: Auth
           documentation:
             summary: "Update a todo item"
             description: "Update a todo item"
@@ -200,7 +197,7 @@ functions:
         Action:
           - s3:*
           - xray:PutTraceSegments
-        Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
+        Resource: arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}/*
 
 resources:
   Resources:
@@ -262,7 +259,7 @@ resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.ATTACHMENT_S3_BUCKET}
+        BucketName: ${self:provider.environment.S3_BUCKET_NAME}
         CorsConfiguration:
           CorsRules:
             - AllowedOrigins:
@@ -288,6 +285,5 @@ resources:
               Effect: Allow
               Principal: "*"
               Action: "s3:GetObject"
-              Resource: "arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*"
-        Bucket:
-          Ref: AttachmentsBucket
+              Resource: "arn:aws:s3:::${self:provider.environment.S3_BUCKET_NAME}/*"
+        Bucket: !Ref AttachmentsBucket
