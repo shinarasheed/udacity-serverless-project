@@ -1,31 +1,52 @@
-import "source-map-support/register";
+import 'source-map-support/register'
+
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyHandler,
-  APIGatewayProxyResult,
-} from "aws-lambda";
-import { UpdateTodoRequest } from "../../requests/UpdateTodoRequest";
-import { updateToDo } from "../../businessLogic/ToDo";
+  APIGatewayProxyResult
+} from 'aws-lambda'
+import * as middy from 'middy'
+import { cors } from 'middy/middlewares'
+import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest'
+import { updateTodoItem } from '../../businessLogic/todoItems'
+import { getUserId } from '../utils'
+import { createLogger } from '../../utils/logger'
 
-export const handler: APIGatewayProxyHandler = async (
+const logger = createLogger('updateTodo')
+
+const updateTodoHandler: APIGatewayProxyHandler = async function (
   event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> => {
-  const authorization = event.headers.Authorization;
-  const split = authorization.split(" ");
-  const jwtToken = split[1];
+): Promise<APIGatewayProxyResult> {
+  logger.info('Caller event', event)
 
-  const todoId = event.pathParameters.todoId;
-  const updatedTodo: UpdateTodoRequest = JSON.parse(event.body);
+  const userId = getUserId(event)
+  const todoId = event.pathParameters?.todoId
+  const updateTodoRequest = JSON.parse(event.body || '') as UpdateTodoRequest
 
-  const toDoItem = await updateToDo(updatedTodo, todoId, jwtToken);
+  if (!todoId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Invalid todoId parameter' })
+    }
+  }
+
+  const updated = await updateTodoItem(userId, todoId, updateTodoRequest)
+  if (!updated) {
+    logger.info('Todo item does not exist', { userId, todoId })
+    return {
+      statusCode: 404,
+      body: JSON.stringify({
+        error: 'Todo item does not exist'
+      })
+    }
+  }
+
+  logger.info('Todo item was updated', { userId, todoId })
 
   return {
     statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-    body: JSON.stringify({
-      item: toDoItem,
-    }),
-  };
-};
+    body: ''
+  }
+}
+
+export const handler = middy(updateTodoHandler).use(cors({ credenials: true }))
