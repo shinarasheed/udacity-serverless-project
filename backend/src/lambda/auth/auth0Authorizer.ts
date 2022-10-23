@@ -1,5 +1,5 @@
 import "source-map-support/register";
-import { CustomAuthorizerResult } from "aws-lambda";
+import { CustomAuthorizerEvent, CustomAuthorizerResult } from "aws-lambda";
 import Axios from "axios";
 import { verify, decode } from "jsonwebtoken";
 import { Jwt } from "../../auth/Jwt";
@@ -11,7 +11,9 @@ const logger = createLogger("auth");
 const jwksUrl = process.env.JWKS_URL || "";
 let signingKeys: { kid: string; publicKey: string }[];
 
-export const handler = async (event): Promise<CustomAuthorizerResult> => {
+export const handler = async (
+  event: CustomAuthorizerEvent
+): Promise<CustomAuthorizerResult> => {
   logger.info("Authorizing a user", event.authorizationToken);
   try {
     const jwtToken = await verifyToken(event.authorizationToken || "");
@@ -31,7 +33,7 @@ export const handler = async (event): Promise<CustomAuthorizerResult> => {
       },
     };
   } catch (e) {
-    logger.error("User not authorized", { error: e.message });
+    //logger.error("User not authorized", { error: e.message });
 
     return {
       principalId: "user",
